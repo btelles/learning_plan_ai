@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import List
 import abc
 from action import Action
 from problem_spec import ProblemSpec
