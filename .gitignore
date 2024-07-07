@@ -1,0 +1,4 @@
+learning_plan_ai.code-workspace
+.vscode/
+__pycache__/
+venv/
