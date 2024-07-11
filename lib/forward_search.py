@@ -1,8 +1,12 @@
 from typing import List
 import abc
+import logging
 from action import Action
+from lib.state_action import StateAction
 from problem_spec import ProblemSpec
 from state import State
+
+logger = logging.getLogger(__name__)
 
 class ForwardSearch:
   """Represents a forward search algorithm that uses a heuristic to guide the search towards the goal state."""
@@ -14,17 +18,17 @@ class ForwardSearch:
     pass
 
   @abc.abstractmethod
-  def select_applicable(self, state: State, actions: List[Action]) -> Action:
+  def select_applicable(self, state: State, state_actions: List[StateAction]) -> StateAction:
     """ Returns an action that can be taken from the given state to reach the goal state."""
     pass
 
   @abc.abstractmethod
-  def update_applicables(self, existing_actions: List[Action], new_actions: List[Action]) -> List[Action]:
+  def update_applicables(self, existing_actions: List[StateAction], new_actions: List[StateAction]) -> List[StateAction]:
     """ Returns an updated list of actions that can be applied"""
     pass
 
   @abc.abstractmethod
-  def update_plan(actions: List[Action], new_action: Action) -> List[Action]:
+  def update_plan(self, actions: List[Action], new_action: Action) -> List[Action]:
     """ Returns an updated plan with the action that was selected."""
     pass
 
@@ -33,14 +37,29 @@ class ForwardSearch:
     """
     state = si
     plan = list[Action]()
-    applicables = list[Action]()
+    applicables = list[StateAction]()
+
+    logger.debug(f"Starting search from state {state}")
 
     while True:
       if (self.satisfies_goal(state, goal_state)):
+        logger.debug(f"Goal state reached with states:\n\n  {state}\n\nand\n\n  {goal_state}")
         return plan
+
+      logger.debug(f"Expanding state:\n  {state}")
       applicables = self.update_applicables(applicables, o.expand(state))
+      logger.debug(f"New applicable actions are:\n  {applicables}")
+
       if (not applicables):
         return False
-      action = self.select_applicable(state, applicables)
-      state = o.step(state, action)
-      plan = self.update_plan(plan, action)
+      state_action = self.select_applicable(state, applicables)
+      logger.debug(f"Selected action:\n  {state_action}")
+
+      state = o.step(state, state_action.action)
+      logger.debug(f"visited state/action: {state_action}")
+      applicables = [a for a in applicables if a != state_action]
+      
+      logger.debug(f"New state after applying the action is:\n  {state}")
+
+      plan = self.update_plan(plan, state_action.action)
+      logger.debug(f"New plan is:\n  {plan}")
