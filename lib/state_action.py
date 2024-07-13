@@ -6,3 +6,4 @@ from dataclasses import dataclass
 class StateAction:
   state: State
   action: Action
+  cost: int  # Estimated cost to reach a goal state.

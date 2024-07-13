@@ -47,7 +47,7 @@ class ForwardSearch:
         return plan
 
       logger.debug(f"Expanding state:\n  {state}")
-      applicables = self.update_applicables(applicables, o.expand(state))
+      applicables: List[StateAction] = self.update_applicables(applicables, o.expand(state))
       logger.debug(f"New applicable actions are:\n  {applicables}")
 
       if (not applicables):
