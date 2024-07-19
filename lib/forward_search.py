@@ -27,7 +27,7 @@ class ForwardSearch:
         """ Returns an updated plan with the action that was selected."""
         raise NotImplementedError("The update_plan method must be implemented.")
 
-    def search(self, o: ProblemSpec, si: State, goal_state: State):
+    def search(self, problem_spec: ProblemSpec, si: State, goal_state: State):
         """Performs a forward search using the `expand` and `step` functions from the problem specification, until the goal state is reached.
         """
         state = si
@@ -44,7 +44,7 @@ class ForwardSearch:
 
             logger.debug(f"Expanding state:\n  {state}")
             applicables: List[StateAction] = self.update_applicables(
-                applicables, o.successors(state))
+                applicables, problem_spec.successors(state))
             logger.debug(f"New applicable actions are:\n  {applicables}")
 
             if (not applicables):
@@ -52,7 +52,7 @@ class ForwardSearch:
             state_action = self.select_applicable(state, applicables)
             logger.debug(f"Selected action:\n  {state_action}")
 
-            state = o.step(state, state_action.action)
+            state = problem_spec.step(state, state_action.action)
             logger.debug(f"visited state/action: {state_action}")
             applicables = [a for a in applicables if a != state_action]
 

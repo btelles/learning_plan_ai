@@ -7,9 +7,11 @@ from abc import abstractmethod
 from itertools import chain
 
 class GreedyBestFirstSearch(ForwardSearch):
-  """Greedy Best First Search is a depth-first forward search that tries to
-  find a solution from an initial state to a goal state using a static
-  heuristic function."""
+  """Greedy Best First Search is an informed depth-first forward search.
+  It finds a plan that starts at an initial state and reaches a goal 
+  state using an estimate of the cost to get to the goal from the a 
+  current state.
+  """
   
   @abstractmethod
   def heuristic_fn(self, state: State) -> int:
@@ -24,7 +26,7 @@ class GreedyBestFirstSearch(ForwardSearch):
   def select_applicable(self, state: State, state_actions: List[StateAction]) -> StateAction:
     """ Returns the action whose resulting state has the lowest heuristic.
     In this implementation, this will always be the first applicable action
-    since actions are stored in ascending order of lowest resulting state cost.
+    since actions are stored in a priority queue of ascending cost order.
     """
     return state_actions.pop(0)
   
